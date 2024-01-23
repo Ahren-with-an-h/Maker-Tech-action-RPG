@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://uag7udnduai5"]
+[gd_scene load_steps=21 format=3 uid="uid://uag7udnduai5"]
 
 [ext_resource type="Script" path="res://scenes/world.gd" id="1_2ho2w"]
 [ext_resource type="PackedScene" uid="uid://coyvh667sepaq" path="res://player/player.tscn" id="1_ueqk7"]
@@ -12,6 +12,8 @@
 [ext_resource type="PackedScene" uid="uid://belc5n4aheauo" path="res://collectables/lifepot.tscn" id="6_pkehv"]
 [ext_resource type="PackedScene" uid="uid://o51lvtq3qx0w" path="res://collectables/sword.tscn" id="7_d3588"]
 [ext_resource type="PackedScene" uid="uid://cj8sj45ngqd0d" path="res://gui/hearts_container.tscn" id="8_wxk52"]
+[ext_resource type="Script" path="res://scenes/CanvasLayer.gd" id="12_57006"]
+[ext_resource type="PackedScene" uid="uid://buwj4dm1ts74c" path="res://gui/ineventory_gui.tscn" id="13_qqfss"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_rut8u"]
 texture = ExtResource("2_bpfv2")
@@ -3963,9 +3965,16 @@ end_point = NodePath("Marker2D")
 position = Vector2(8, 40)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+process_mode = 3
+script = ExtResource("12_57006")
 
 [node name="HeartsContainer" parent="CanvasLayer" instance=ExtResource("8_wxk52")]
 anchors_preset = 0
 anchor_left = 0.0
 anchor_right = 0.0
 grow_horizontal = 1
+
+[node name="IneventoryGui" parent="CanvasLayer" instance=ExtResource("13_qqfss")]
+
+[connection signal="closed" from="CanvasLayer/IneventoryGui" to="." method="_on_ineventory_gui_closed"]
+[connection signal="opened" from="CanvasLayer/IneventoryGui" to="." method="_on_ineventory_gui_opened"]

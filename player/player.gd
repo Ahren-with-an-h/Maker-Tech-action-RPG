@@ -15,6 +15,8 @@ var health: int = max_health
 
 @export var knockback_power: int = 5000
 
+@export var inventory: Inventory
+
 var is_hurt: bool = false
 
 

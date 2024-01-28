@@ -12,8 +12,8 @@ func _process(delta):
 	pass
 
 
-func set_max_hearts(max: int):
-	for i in range(max):
+func set_max_hearts(maximum: int):
+	for i in range(maximum):
 		var heart = HeartGuiClass.instantiate()
 		add_child(heart)
 

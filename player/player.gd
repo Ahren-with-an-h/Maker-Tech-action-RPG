@@ -9,6 +9,7 @@ signal health_changed
 @onready var effects = $Effects
 @onready var hurt_box = $HurtBox
 @onready var hurt_timer = $HurtTimer
+@onready var weapon = $weapon
 
 @export var max_health = 3
 var health: int = max_health
@@ -18,29 +19,43 @@ var health: int = max_health
 @export var inventory: Inventory
 
 var is_hurt: bool = false
+var last_anim_direction: String = "down"
+var is_attacking: bool = false
 
 
 func _ready():
 	effects.play("RESET")
+	weapon.visible = false
 
 
 func handle_input():
-	#var moveDirection = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 	var left = Input.get_action_strength("ui_left")
 	var right = Input.get_action_strength("ui_right")
 	var up = Input.get_action_strength("ui_up")
 	var down = Input.get_action_strength("ui_down")
-	# print("left: ", left, ", right: ", right, ", up: ", up, ", down: ", down)
 	var horizontal = right - left
 	var vertical = down - up
 	
 	var moveDirection = Vector2(horizontal, vertical).normalized()
 	
 	velocity = moveDirection * speed
-	#print(moveDirection)
 	
+	if Input.is_action_just_pressed("attack"):
+		attack()
+		
+
+func attack():
+	animations.play("attack_" + last_anim_direction)
+	is_attacking = true
+	weapon.enable()
+	await animations.animation_finished
+	weapon.disable()
+	is_attacking = false
+
 
 func update_animation():
+	if is_attacking: return
+	
 	if velocity.length() == 0:
 		if animations.is_playing():
 			animations.stop()
@@ -52,13 +67,14 @@ func update_animation():
 		elif velocity.y < 0: direction = "up"
 		
 		animations.play("walk_" + direction)
+		last_anim_direction = direction
 	
 
 func handle_collision():
 	for i in get_slide_collision_count():
 		var collision = get_slide_collision(i)
 		var collider = collision.get_collider()
-		#print_debug(collider.name)
+		print_debug(collider.name)
 
 
 func _physics_process(delta):
@@ -93,8 +109,8 @@ func _on_hurt_box_area_entered(area):
 		area.collect(inventory)
 
 
-func _on_hurt_box_area_exited(area):
-	pass
+#func _on_hurt_box_area_exited(area):
+	#pass
 	
 	
 func knockback(enemy_velocity):
